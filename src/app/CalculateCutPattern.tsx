@@ -67,7 +67,7 @@ const CalculateCutPattern = (formData: {
     "whileの中");
 
       //phase0の切断
-      let cutInfo: cutInfo = {
+      const cutInfo: cutInfo = {
         patternsIndex: patternNum,
         cutCount: [
           { xCount: phase0Count, yCount: 0 },
