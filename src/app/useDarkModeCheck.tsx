@@ -1,3 +1,5 @@
+
+
 import { useState, useEffect } from 'react';
 
 function useDarkModeCheck() {
@@ -17,7 +19,7 @@ function useDarkModeCheck() {
     };
   }, []);
 
-  return { darkMode}
+  return { darkMode }
   };
 
 export default useDarkModeCheck;

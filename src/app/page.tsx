@@ -6,301 +6,54 @@ import Input from "./Input";
 import Button from "./Button";
 import useDarkModeCheck from "./useDarkModeCheck";
 import InputDarkModeStyle from "./InputDarkModeStyle";
+import DrawCutRects from "./DrawCutRects";
+import CalculateCutPattern from "./CalculateCutPattern";
+
+
+
 
 
 export default function App() {
-  const [vertical, setVertical] = useState(0);
-  const [horizontal, setHorizontal] = useState(0);
-  const [materialCount, setMaterialCount] = useState(1);
-  const [cutVertical, setCutVerical] = useState(0);
-  const [cutHorizontal, setCutHorizontal] = useState(0);
-  const [cuttingCost, setCuttingCost] = useState(0);
+  const [formData, setFormData] = useState({
+    vertical: 0,
+    horizontal: 0,
+    materialCount: 1,
+    cutVertical: 0,
+    cutHorizontal: 0,
+    cuttingCost: 0,
+  });
+  const [bestCutInfo, setBestCutInfo] = useState<cutInfo>({
+    patternsIndex: 0,
+    cutCount: [
+      { xCount: 0, yCount: 0 },
+      { xCount: 0, yCount: 0 },
+      { xCount: 0, yCount: 0 },
+    ]
+  });
   const [totalCut, setTotalCut] = useState(0);
-  const [squares, setSquares] = useState<Rect[]>([]);
-  const [showRects, setShowRects] = useState(false);
-  const [testX, setTestX] = useState(0);
-  const [testY, setTestY] = useState(0);
 
-  // 四角作成テスト
-  type Rect = {
-    top: number;
-    left: number;
-    width: number;
-    height: number;
-    color?: string;
-    border?: string;
+  const handleChange = (key: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [key]: Number(e.target.value) });
   };
 
-  type BoxWithRectsProps = {
-    squares: Rect[];
-    ox: number;
-    oy: number;
+  function CreateRect (){  
+    const result = CalculateCutPattern(formData);
+    setBestCutInfo(result);
+
+    // 切断枚数を計算
+    const total =
+      (result.cutCount[0].xCount * result.cutCount[0].yCount) +
+      (result.cutCount[1].xCount * result.cutCount[1].yCount) +
+      (result.cutCount[2].xCount * result.cutCount[2].yCount);
+
+    setTotalCut(total * formData.materialCount); // 枚数も考慮
   };
+
+
   
-  // ダークモードの判定
-  const isDarkMode = typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  const BoxWithRects: React.FC<BoxWithRectsProps> = ({ squares, ox , oy }) => {
-    const borderColor = isDarkMode ? 'white' : 'black';
-    console.log("ボーダーの色確認", isDarkMode, borderColor);
 
-    return (
-      <div style={{ position: 'relative', width: ox, height: oy, border: `2px solid ${borderColor} ` }}>
-        {squares.map((squares, index) => (
-          <div
-            key={index}
-            style={{
-              position: 'absolute',
-              top: squares.top,
-              left: squares.left,
-              width: squares.width,
-              height: squares.height,
-              border: squares.border || '1px solid black',
-            }}
-          />
-        ))}
-      </div>
-    );
-  };
-
-  const createRect = () => {
-    let tateCutCount = 0;
-    let yokoCutCount = 0;
-    let hantenTateCutCount = 0;
-    let hantenYokoCutCount = 0;
-    const cutAry = [];
-
-    function getMaxValueAndIndex(arr: number[]): { value: number; index: number } {
-      return arr.reduce(
-        (acc, val, idx) => {
-          if (val > acc.value) {
-            return { value: val, index: idx };
-          }
-          return acc;
-        },
-        { value: -Infinity, index: -1 }
-      );
-    }
-
-    console.log("縦", vertical, "横", horizontal, "縦切断", cutVertical, "横切断", cutHorizontal, "切断代", cuttingCost);
-    if (horizontal >= cutHorizontal) {
-      tateCutCount = Math.floor(vertical / (cutVertical + cuttingCost));
-      console.log("縦切断", tateCutCount);
-    }
-    if (vertical >= cutVertical) {
-      yokoCutCount = Math.floor(horizontal / (cutHorizontal + cuttingCost));
-      console.log("横切断", yokoCutCount);
-    }
-    console.log("反転切断", horizontal, vertical, cutVertical, cutHorizontal);
-    if (horizontal >= cutVertical) {
-      hantenTateCutCount = Math.floor(vertical / (cutHorizontal + cuttingCost));
-      console.log("縦反転切断", hantenTateCutCount);
-    }
-    if (vertical >= cutHorizontal) {
-      hantenYokoCutCount = Math.floor(horizontal / (cutVertical + cuttingCost));
-      console.log("横反転切断", hantenYokoCutCount);
-    }
-
-    cutAry.push(tateCutCount, yokoCutCount, hantenTateCutCount, hantenYokoCutCount);
-    const { value: maxCutCount, index: maxIndex } = getMaxValueAndIndex(cutAry);
-
-    console.log("テスト", { cutAry, maxCutCount, maxIndex });
-
-    let totalTateCut = 0;
-    let totalYokoCut = 0;
-    let originalTate = vertical;
-    let orijinalYoko = horizontal;
-    let cutTate = 0;
-    let cutYoko = 0;
-    let secondCutCount = 0;
   
-    switch (maxIndex) {
-      case 0:
-        // 通常の縦切断
-        cutTate = cutVertical;
-        cutYoko = cutHorizontal;
-        originalTate = vertical;
-        orijinalYoko = horizontal;
-        secondCutCount = yokoCutCount;
-        break;
-      case 1:
-        // 通常の横切断
-        cutTate = cutHorizontal;
-        cutYoko = cutVertical;
-        originalTate = horizontal;
-        orijinalYoko = vertical;
-        secondCutCount = tateCutCount;
-        break;
-      case 2:
-        // 反転した縦切断
-        cutTate = cutHorizontal;
-        cutYoko = cutVertical;
-        originalTate = vertical;
-        orijinalYoko = horizontal;
-        secondCutCount = hantenYokoCutCount;
-        break;
-      case 3:
-        // 反転した横切断
-        cutYoko = cutHorizontal;
-        cutTate = cutVertical;
-        originalTate = horizontal;
-        orijinalYoko = vertical;
-        secondCutCount = hantenTateCutCount;
-        break;
-      default:
-        alert("切断サイズが不正です。");
-        break;
-    }
-
-    totalTateCut = cutTate + cuttingCost;
-    totalYokoCut = cutYoko + cuttingCost;
-    let tateC = maxCutCount;
-    let yokoC = secondCutCount;
-
-    console.log("計算前縦カットカウント", tateC, "計算前横カットカウント", yokoC, "切断サイズ縦", cutTate, "切断サイズ横", cutYoko, "切断代", cuttingCost);
-
-    let amariTate = originalTate - (tateC * totalTateCut);
-    if (amariTate >= cutTate) {
-      // 余り縦が切断サイズ以上なら追加で切断
-      tateC += 1;
-      amariTate -= cutTate;
-    } else {
-      // 余り縦が切断代のみなら切断代を減算
-      amariTate += cuttingCost
-    }
-    let amariYoko = orijinalYoko - (yokoC * totalYokoCut);
-    if (amariYoko >= cutYoko) {
-      // 余り横が切断サイズ以上なら追加で切断
-      yokoC += 1;
-      amariYoko -= cutYoko;
-    } else {
-      // 余り横が切断代のみなら切断代を減算
-      amariYoko += cuttingCost;
-    }
-
-    let afterCutCountY = 0;
-    let afterCutCountX = 0;
-    if (amariYoko >= cutTate + cuttingCost) {
-      // 余り部分でさらに反転切断できる場合
-      afterCutCountY = Math.floor(originalTate / totalYokoCut);
-      if (amariYoko !== 0) {
-        afterCutCountX = Math.floor(amariYoko / totalTateCut);
-      }
-    }
-    console.log("amariTate", amariTate, "amariYoko", amariYoko, "afterCutCountX", afterCutCountX, "afterCutCountY" , afterCutCountY, "cutTate", cutTate, "cutYoko", cutYoko);
-
-    setTotalCut((tateC * yokoC + afterCutCountX * afterCutCountY) * materialCount);
-    console.log("tateC", tateC, "yokoC", yokoC, "afterCutCountX", afterCutCountX,"afterCutCountY",  afterCutCountY ,"totalTateCut", totalTateCut, "totalYokoCut", totalYokoCut ,"cutVertical", cutVertical, "originalTate", originalTate, "cutHorizontal", cutHorizontal, "orijinalYoko", orijinalYoko,"amaritate", amariTate, "amariYoko", amariYoko);
-
-    // 四角表示
-    // let newBox: BoxProps;
-    // if (vertical >= horizontal) {
-    //   newBox = { vertical: originalTate, horizontal: orijinalYoko };
-    // } else {
-    //   newBox = { vertical: orijinalYoko, horizontal: originalTate };
-    // }
-    // setBox(newBox);
-    // setTestX(newBox.horizontal);
-    // setTestY(newBox.vertical);
-    setTestX(orijinalYoko);
-    setTestY(originalTate);
-
-    console.log("yokoC", yokoC, "tateC", tateC, "maxIndex", maxIndex , "8/9");
-
-    let x = 0;
-    let y = 0;
-    let u = 0;
-    let flag = false;
-    const newSquares: Rect[] = [];
-
-    for (let i = 0; i < tateC; i++) {
-      newSquares.push({
-        top: y + i * cutTate,
-        left: 0,
-        width: cutYoko,
-        height: cutTate,
-        border: '1px solid green'
-      });
-
-      for (let j = 0; j < yokoC; j++) {
-        newSquares.push({
-          top: y + i * cutTate,
-          left: x + j * cutYoko,
-          width: cutYoko,
-          height: cutTate,
-          border: '1px solid green'
-        });
-
-        u = 0;
-        flag = false;
-        if (j + 1 < yokoC) {
-          newSquares.push({
-            top: y + i * cutTate,
-            left: x + j * cutYoko + cutYoko + cuttingCost / 2,
-            width: 1,
-            height: cutTate,
-            border: '1px solid red'
-          });
-          u = x + cuttingCost;
-        }
-        if (i + 1 < tateC) {
-          flag = true;
-          newSquares.push({
-            top: y + i * cutTate + cutTate + cuttingCost / 2,
-            left: x + j * cutYoko,
-            width: cutYoko,
-            height: 1,
-            border: '1px solid red'
-          });
-        }
-        x = u;
-      }
-      x = 0;
-      if (flag) {
-        y += cuttingCost;
-      }
-    }
-
-    x = cuttingCost * yokoC;
-    
-    // 反転切断の四角表示
-    for (let j = 0; j < afterCutCountX; j++) {
-      y=0;
-      for (let i = 0; i < afterCutCountY; i++) {
-        newSquares.push({
-          top: y + i * cutYoko,
-          left: x + yokoC * cutYoko,
-          width: cutTate,
-          height: cutYoko,
-          border: '1px solid green'
-        });
-        newSquares.push({
-          top: y + i * cutYoko,
-          left: x + yokoC * cutYoko - cuttingCost / 2,
-          width: 1,
-          height: cutYoko,
-          border: '1px solid red'
-        });
-
-        if (i + 1 < afterCutCountY) {
-          newSquares.push({
-            top: y + i * cutYoko + cutYoko + cuttingCost / 2,
-            left: x + yokoC * cutYoko,
-            width: cutTate,
-            height: 1,
-            border: '1px solid red'
-          });
-          y += cuttingCost;
-        }
-        
-      }
-      
-      x += cuttingCost + cutTate;;
-    }
-
-    setSquares(newSquares);
-    setShowRects(true);
-  }
 
   return (
     <div className="p-2 flex">
@@ -311,9 +64,10 @@ export default function App() {
           <div className="gap-2">
             <Input
               title="縦"
-              value={vertical}
-              onChange={(e) => setVertical(Number(e.target.value))}
-              onEnter={createRect}
+              value={formData.vertical}
+              type="number"
+              onChange={handleChange('vertical')}
+              onEnter={CreateRect}
               isDarkMode={useDarkModeCheck().darkMode}
             />
           </div>
@@ -322,9 +76,9 @@ export default function App() {
             <Input
               title="横"
               type="number"
-              value={horizontal}
-              onChange={(e) => setHorizontal(Number(e.target.value))}
-              onEnter={createRect}
+              value={formData.horizontal}
+              onChange={handleChange('horizontal')}
+              onEnter={CreateRect}
             />
           </div>
         </div>
@@ -332,9 +86,9 @@ export default function App() {
           <Input
             title="枚数"
             type="number"
-            value={materialCount}
-              onChange={(e) => setMaterialCount(Number(e.target.value))}
-              onEnter={createRect}
+            value={formData.materialCount}
+              onChange={handleChange('materialCount')}
+              onEnter={CreateRect}
             className={InputDarkModeStyle().inputStyle}
           />
         </div>
@@ -346,9 +100,9 @@ export default function App() {
           <div className="gap-2">
             <Input
               title="縦"
-              value={cutVertical}
-              onChange={(e) => setCutVerical(Number(e.target.value))}
-              onEnter={createRect}
+              value={formData.cutVertical}
+              onChange={handleChange('cutVertical')}
+              onEnter={CreateRect}
             />
           </div>
           <p className="mt-4 text-3xl">×</p>
@@ -356,9 +110,9 @@ export default function App() {
             <Input
               title="横"
               type="number"
-              value={cutHorizontal}
-              onChange={(e) => setCutHorizontal(Number(e.target.value))}
-              onEnter={createRect}
+              value={formData.cutHorizontal}
+              onChange={handleChange('cutHorizontal')}
+              onEnter={CreateRect}
             />
           </div>
         </div>
@@ -366,23 +120,22 @@ export default function App() {
           <Input
             title="切断代"
             type="number"
-            value={cuttingCost}
-              onChange={(e) => setCuttingCost(Number(e.target.value))}
-              onEnter={createRect}
+            value={formData.cuttingCost}
+              onChange={handleChange('cuttingCost')}
+              onEnter={CreateRect}
             className={InputDarkModeStyle().inputStyle}
           />
         </div>
         <hr className="border-t-2 border-gray-400 mt-5" />
-        <Button className = "my-5"onClick={createRect}>計算開始</Button>
+        <Button className = "my-5"onClick={CreateRect}>計算開始</Button>
         <div className="flex-1 flex items-center justify-center">
           <p className="text-4xl text-blue-600">{totalCut}枚</p>
         </div>
       </div>
       <div className="ml-2 w-px h-screen border border-gray-400" />
       <div className="p-2">
-        {showRects && (
-          <BoxWithRects squares={squares} ox={testX} oy={testY} />
-        )}
+
+        <DrawCutRects formData={formData} bestCutInfo={bestCutInfo} />
         <p className="text-lg text-gray-600 mt-4">
         </p>
       </div>
