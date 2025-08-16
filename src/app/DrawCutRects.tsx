@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 
 
 
-import useDarkModeCheck from "./useDarkModeCheck";
+
 
 
 type rectProps = {
@@ -21,7 +22,9 @@ type rectProps = {
 
 
 function DrawCutRects(props: rectProps) {
-    const {formData, bestCutInfo} = props;
+    const {formData, bestCutInfo} = props;  
+    const [darkMode, setDarkMode] = useState(false);
+
 //     formData: {
 //         vertical: number;
 //         horizontal: number;
@@ -162,13 +165,34 @@ function DrawCutRects(props: rectProps) {
 
     
     // const  darkMode  = useDarkModeCheck();    
-    let darkMode = false;
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (event: MediaQueryListEvent) => {
-      darkMode = (event.matches);
-    };
-    mediaQuery.addEventListener('change', handleChange);
-    darkMode = (mediaQuery.matches);
+
+    // let darkMode = false;
+    // const mediaQuery =  window.matchMedia('(prefers-color-scheme: dark)');
+    // const handleChange = (event: MediaQueryListEvent) => {
+    //   darkMode = (event.matches);
+    // };
+    // mediaQuery.addEventListener('change', handleChange);
+    // darkMode = (mediaQuery.matches);
+
+    useEffect(() => {
+    if (typeof window !== "undefined") {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      setDarkMode(mediaQuery.matches);
+
+      const handleChange = (event: MediaQueryListEvent) => {
+        setDarkMode(event.matches);
+      };
+
+      mediaQuery.addEventListener("change", handleChange);
+
+      return () => {
+        mediaQuery.removeEventListener("change", handleChange);
+      };
+    }
+  }, []);
+
+
+
     const borderColor = darkMode ? 'white' : 'black';
     console.log("ボーダーの色確認テスト", darkMode, borderColor);
 
