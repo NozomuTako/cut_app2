@@ -2,12 +2,14 @@
 
 import React from "react";
 import { useState } from "react";
-import Input from "./Input";
-import Button from "./Button";
+import Input from "../components/Input";
+import Button from "../components/Button";
 import useDarkModeCheck from "./useDarkModeCheck";
 import InputDarkModeStyle from "./InputDarkModeStyle";
 import DrawCutRects from "./DrawCutRects";
 import CalculateCutPattern from "./CalculateCutPattern";
+import Link from "next/link";
+import { cutInfo } from "./Type";
 
 
 
@@ -58,6 +60,14 @@ export default function App() {
   return (
     <div className="p-2 flex">
       <div>
+        <div className="flex gap2">
+          <p className="text-xl">MODE1</p>
+          <div className="gap-5"/>
+          <Link href="/materialCut2" className="text-blue-600 hover:underline text-xl ml-5">
+            MODE2
+          </Link>
+        </div>
+        <hr className="border-t-2 border-gray-400 my-5" />
         <p className="text-2xl">材料</p>
         <div className="h-6" />
         <div className="flex gap-2">
@@ -132,7 +142,7 @@ export default function App() {
           <p className="text-4xl text-blue-600">{totalCut}枚</p>
         </div>
       </div>
-      <div className="ml-2 w-px h-screen border border-gray-400" />
+      <div className="ml-2 w-px border border-gray-400" />
       <div className="p-2">
 
         <DrawCutRects formData={formData} bestCutInfo={bestCutInfo} />

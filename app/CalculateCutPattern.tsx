@@ -1,4 +1,4 @@
-
+import { cutInfo } from "./Type";
 
 
 const CalculateCutPattern = (formData: {
