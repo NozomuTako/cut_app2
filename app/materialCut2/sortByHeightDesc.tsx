@@ -16,6 +16,7 @@ function sortByHeightDesc(
       pieces.push({ width: w, height: h, id: index });
     }
   });
+  // 縦が大きいものになるように回転
   const sizeVariants = pieces.map((piece) => {
     if ((piece.width !== piece.height) && 
     ((piece.width >= piece.height && piece.width <= materialData.vertical) || (piece.height >= piece.width && piece.height > materialData.vertical))) {

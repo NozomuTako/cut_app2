@@ -28,9 +28,9 @@ function sortByRandomDesc(
 
   });
 
-  const sortedByHeight = sizeVariants.sort((a, b) => b.height - a.height);
+  const sortedByRandom = sizeVariants.sort((a, b) => b.height - a.height);
 
-  return sortedByHeight;
+  return sortedByRandom;
 }
 
 export default sortByRandomDesc;

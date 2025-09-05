@@ -28,9 +28,9 @@ function sortByWidthDesc(
 
   });
 
-  const sortedByHeight = sizeVariants.sort((a, b) => b.width - a.width);
+  const sortedByWidth = sizeVariants.sort((a, b) => b.width - a.width);
 
-  return sortedByHeight;
+  return sortedByWidth;
 }
 
 export default sortByWidthDesc;

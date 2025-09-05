@@ -71,7 +71,6 @@ const MaterialCut2Page = () => {
     Descs.push(sortByRandomDesc(inputs, formData2));
     Descs.push(sortByRandomDesc(inputs, formData2));
     Descs.push(sortByRandomDesc(inputs, formData2));
-    Descs.push(sortByRandomDesc(inputs, formData2));
 
     console.log (Descs , "Descs")
 

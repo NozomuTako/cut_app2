@@ -16,41 +16,41 @@ const tempSheets:MaterialSheet[][] = [];
 
     
     
-        const sheets: MaterialSheet[] = [];
+      const sheets: MaterialSheet[] = [];
 
-        for (const piece of e) {
+      for (const piece of e) {
         let placed = false;
 
         for (const sheet of sheets) {
-            const result = tryPlaceCutPiece(sheet, piece);
-            if (result) {
-            sheet.placedPieces.push(result);
-            placed = true;
-            break;
-            }
+          const result = tryPlaceCutPiece(sheet, piece);
+          if (result) {
+          sheet.placedPieces.push(result);
+          placed = true;
+          break;
+          }
         }
 
         if (!placed) {
-            // 新しい材料を追加
-            const newSheet: MaterialSheet = {
-            width: materialWidth,
-            height: materialHeight,
-            placedPieces: [],
-            };
+          // 新しい材料を追加
+          const newSheet: MaterialSheet = {
+          width: materialWidth,
+          height: materialHeight,
+          placedPieces: [],
+          };
 
-            const result = tryPlaceCutPiece(newSheet, piece);
-            if (result) {
-            newSheet.placedPieces.push(result);
-            }
+          const result = tryPlaceCutPiece(newSheet, piece);
+          if (result) {
+          newSheet.placedPieces.push(result);
+          }
 
-            sheets.push(newSheet);
+          sheets.push(newSheet);
         }
-        }
+      }
 
-        tempSheets[index] = sheets
-        if (minNum > sheets.length || minNum===0) {
-        minNum = sheets.length;
-        };
+      tempSheets[index] = sheets
+      if (minNum > sheets.length || minNum===0) {
+      minNum = sheets.length;
+      };
     });
 
   console.log (tempSheets, "シートの値")

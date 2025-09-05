@@ -45,8 +45,6 @@ const DrawCutRects2: React.FC<{
                 key={i}
                 className="absolute bg-blue-500 text-white text-xs flex items-center justify-center border-1 border-green-600"
                 style={{
-                  // left: `${piece.x + halfCuttingCost}px`,
-                  // top: `${piece.y + halfCuttingCost}px`,
                   left: `${piece.x}px`,
                   top: `${piece.y}px`,
                   width: `${piece.width - formData2.cuttingCost}px`,
