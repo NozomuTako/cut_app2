@@ -4,8 +4,6 @@ function tryPlaceCutPiece(
   sheet: MaterialSheet,
   piece: CutPiece
 ): PlacedPiece | null {
-  
-  
   function isOverlapping(
   placed: PlacedPiece[],
   x: number,
@@ -23,7 +21,7 @@ function tryPlaceCutPiece(
   });
 }
 
-  const padding = 3; // 部品間の余白（任意）
+  const padding = 2; // 部品間の余白（任意）
 
   // 探索開始位置
   const step = 1;

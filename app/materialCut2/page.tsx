@@ -7,26 +7,29 @@ import Button from "components/Button";
 import InputDarkModeStyle from "@/InputDarkModeStyle";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
-import { CutPiece, inputValue, MaterialSheet } from "@/Type";
+import { inputValue, MaterialSheet } from "@/Type";
+import placeCutPiecesOnMaterials from "./placeCutPiecesOnMaterials";
 import DrawCutRects2 from "./DrawCutRects2";
-import sortByHeightDesc from "./sortByHeightDesc";
-import sortByWidthDesc from "./sortByWidthDesc";
-import sortByRandomDesc from "./sortByRandomDesc";
-import evaluateDoubleArray from "./evaluateDoubleArray";
+import {MAX,MIN} from "./placeCutPiecesOnMaterials";
 
 
 
 
 
-const MaterialCut2Page = () => { 
+const MaterialCut2Page = () => {
+
+  
   const [placedSheets, setPlacedSheets] = useState<MaterialSheet[]>([]);
+  
   const DarkModeStyle = InputDarkModeStyle();
   const [formData2, setFormData2] = useState({
     vertical: 0,
     horizontal: 0,
     cuttingCost: 0,
   });
+
   const [totalCut, setTotalCut] = useState(0);
+
   // フォームのセットの追加・削除
   const [inputs, setInputs] = useState<inputValue[]>([{
     verticalValue: 0,
@@ -36,9 +39,9 @@ const MaterialCut2Page = () => {
   ])
   const handleAdd = () => {
     setInputs([...inputs, {
-      verticalValue: 0,
-      horizontalValue: 0,
-      materialCount: 1,
+      verticalValue: 0,//縦
+      horizontalValue: 0,//横
+      materialCount: 0,
     }])
   }
   const listHandleChange = (index: number, field: keyof inputValue, value: number) => {
@@ -64,32 +67,51 @@ const MaterialCut2Page = () => {
 
   
 
+
   const CreateRect2 = () => {
-    const Descs: CutPiece[][] = [];
-    Descs.push(sortByHeightDesc(inputs, formData2));
-    Descs.push(sortByWidthDesc(inputs, formData2));
-    Descs.push(sortByRandomDesc(inputs, formData2));
-    Descs.push(sortByRandomDesc(inputs, formData2));
-    Descs.push(sortByRandomDesc(inputs, formData2));
+    const w = formData2.horizontal
+    const h = formData2.vertical
+    const c = formData2.cuttingCost
 
-    console.log (Descs , "Descs")
+    const debugInput = [
+      {
+        horizontalValue: 700,//横
+        verticalValue: 200,//縦
+        materialCount: 4,//個数
+      },
+      {
+        horizontalValue: 500,//横
+        verticalValue: 200,//縦
+        materialCount: 20,//個数
+      },
+      {
+        horizontalValue: 300,//横
+        verticalValue: 80,//縦
+        materialCount: 14,//個数
+      },
+      {
+        horizontalValue: 40,//横
+        verticalValue: 600,//縦
+        materialCount: 10,//個数
+      },
+    ]
+    const output  = placeCutPiecesOnMaterials(w,h,c,MAX,inputs);//inputs
+    const output2 = placeCutPiecesOnMaterials(w,h,c,MIN,inputs);//inputs
 
-    const { sheets, total } = evaluateDoubleArray(Descs, formData2);
-    
-    setPlacedSheets(sheets);
-    setTotalCut(total);
+    if(output.total > 0 && output2.total > 0){
+      if(output.total < output2.total){
+        setTotalCut(output.total);
+        setPlacedSheets(output.sheets);
+      }else{
+        setTotalCut(output2.total);
+        setPlacedSheets(output2.sheets);
+      }
+    }
+
+        // setTotalCut(output.total);
+        // setPlacedSheets(output.sheets);
 
 
-
-    // const { sheets, total } = placeCutPiecesOnMaterials(
-    //   formData2.horizontal,
-    //   formData2.vertical,
-    //   formData2.cuttingCost,
-    //   inputs
-    // );
-    
-
-    // setPlacedSheets(sheets);
   };
 
 

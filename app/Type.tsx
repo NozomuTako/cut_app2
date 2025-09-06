@@ -29,8 +29,11 @@ export type inputValue = {
 }
 
 export type CutPiece = {
+  keyValue: number[];
+  isWidth: boolean;//横が長かったらtrue
   width: number;
   height: number;
+  cnt: number;//個数
   id: number; // 識別用（元の切断サイズのインデックス）
 };
 
@@ -49,15 +52,25 @@ export type PlacedPiece = {
   id: number;
 };
 
+export type AvailableArea = {
+  keyValue: number[];
+  isWidth: boolean;//横が長かったらtrue
+
+  isMerge:boolean; //結合フラグ
+
+  w: number;
+  h: number;
+  x: number;
+  y: number;
+  id: number;
+};
+
+
 export type MaterialSheet = {
   width: number;
   height: number;
-  placedPieces: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    id: number;
-  }[];
+  areaIdCnt: number;
+  placedPieces: PlacedPiece[];
+  availableArea: AvailableArea[];
 };
 
