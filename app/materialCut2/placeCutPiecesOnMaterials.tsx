@@ -19,6 +19,8 @@ export const placeCutPiecesOnMaterials = (
   inputs: inputValue[],
 ): { sheets: MaterialSheet[]; total: number } => {
   //材料の高さ、幅を大きい順に
+  materialHeight += cuttingCost
+  materialWidth += cuttingCost
   const mKeyValue = 
     (materialWidth > materialHeight)?
     [materialWidth, materialHeight] :
