@@ -245,6 +245,8 @@ export const placeCutPiecesOnMaterials = (
 
   //---------------------------------------------------------------------------------------
   sheets.forEach(sh => {
+    sh.width -= cuttingCost//追加 サイズを元に戻す
+    sh.height -= cuttingCost//追加 サイズを元に戻す
     sh.placedPieces.forEach(p => {
       p.width -= cuttingCost 
       p.height -= cuttingCost
