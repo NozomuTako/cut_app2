@@ -95,21 +95,25 @@ const MaterialCut2Page = () => {
         materialCount: 10,//個数
       },
     ]
-    const output  = placeCutPiecesOnMaterials(w,h,c,MAX,inputs);//inputs
-    const output2 = placeCutPiecesOnMaterials(w,h,c,MIN,inputs);//inputs
+    const output  = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,0);//inputs
+    const output2 = placeCutPiecesOnMaterials(w,h,c,MIN,inputs,0);//inputs
+    const output3 = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,1);//inputs
+    const output4 = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,2);//inputs
+    const outputs = [output,output2,output3,output4];
+    const maxOutput = outputs.reduce((prev, current) => (prev.total < current.total ? prev : current));
 
-    if(output.total > 0 && output2.total > 0){
-      if(output.total < output2.total){
-        setTotalCut(output.total);
-        setPlacedSheets(output.sheets);
-      }else{
-        setTotalCut(output2.total);
-        setPlacedSheets(output2.sheets);
-      }
-    }
+    //川上さん if(output.total > 0 && output2.total > 0){
+    //   if(output.total < output2.total){
+    //     setTotalCut(output.total);
+    //     setPlacedSheets(output.sheets);
+    //   }else{
+    //     setTotalCut(output2.total);
+    //     setPlacedSheets(output2.sheets);
+    //   }
+    // }
 
-        // setTotalCut(output.total);
-        // setPlacedSheets(output.sheets);
+    setTotalCut(maxOutput.total);
+    setPlacedSheets(maxOutput.sheets);
 
 
   };

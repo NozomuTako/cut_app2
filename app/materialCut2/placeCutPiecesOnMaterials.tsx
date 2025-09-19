@@ -17,6 +17,7 @@ export const placeCutPiecesOnMaterials = (
   cuttingCost: number,
   sortOption: number,
   inputs: inputValue[],
+  modeFlag: number,
 ): { sheets: MaterialSheet[]; total: number } => {
   //材料の高さ、幅を大きい順に
   materialHeight += cuttingCost
@@ -51,9 +52,9 @@ export const placeCutPiecesOnMaterials = (
   }
 
   //---------------------------------------------------------------------------------------
-  //指定枠に収まるかどうか
+  //指定枠に収まるかどうか　0:横に入る 1:縦に入る -1:入らない
   function checkCut(piece:CutPiece, area:AvailableArea):number {
-      //-----
+      //-----切断サイズの長編が材料の短辺に収まる場合
       if(area.keyValue[MIN] >= piece.keyValue[MAX]){
           return area.isWidth ? 1 : 0
       }
@@ -88,6 +89,9 @@ export const placeCutPiecesOnMaterials = (
 
     if(hitKind !== -1){
       //材料にパーツを登録
+      if (modeFlag > 0) {
+        hitKind = modeFlag - 1;
+      };
       const addPiece:PlacedPiece = {
         x: hitArea.x,
         y: hitArea.y,
