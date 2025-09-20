@@ -29,8 +29,17 @@ const DrawCutRects2: React.FC<{
         <div key={index} className="border border-gray-400 p-2 mb-4">
           <p className="text-lg font-bold text-blue-600">材料 {index + 1}</p>
           <div 
-            className="relative bg-gray-100"
-            style={{ width: `${sheet.width}px`, height: `${sheet.height}px` }}
+            className="relative bg-gray-100 material-sheet-print"
+            style={{ 
+              width: `${sheet.width}px`, 
+              height: `${sheet.height}px`, 
+              // 印刷用スケーリングのためのCSS変数
+              ['--sheet-width' as any]: `${sheet.width}px`,
+
+              // maxWidth: "800px",
+              // maxHeight: "1100px",
+              // overflow: "auto",
+            }}
           >
             {sheet.placedPieces.map((piece, i) => (
               <div

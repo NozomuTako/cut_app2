@@ -100,6 +100,12 @@ const MaterialCut2Page = () => {
     const output3 = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,1);//inputs
     const output4 = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,2);//inputs
     const outputs = [output,output2,output3,output4];
+
+    
+    // const output  = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,0);//inputs
+    // const output2 = placeCutPiecesOnMaterials(w,h,c,MIN,inputs,0);//inputs
+    // const outputs = [output,output2];
+
     const maxOutput = outputs.reduce((prev, current) => (prev.total < current.total ? prev : current));
 
     //川上さん if(output.total > 0 && output2.total > 0){
@@ -262,6 +268,15 @@ const MaterialCut2Page = () => {
           計算開始
         </Button>
 
+        {/* 印刷ボタン追加 */}
+        <Button
+          className="mb-5 ml-2 bg-gray-700 text-white rounded px-3 py-1 hover:bg-gray-900"
+          onClick={() => window.print()}
+        >
+          印刷
+        </Button>
+        {/* ...existing code... */}
+
         <div className="flex-1 flex items-center justify-center">
           <p className="text-4xl text-blue-600">{totalCut}枚</p>
         </div>
@@ -269,7 +284,7 @@ const MaterialCut2Page = () => {
 
       <div className="ml-2 w-px border border-gray-400" />
 
-      <div className="p-2">
+      <div className="p-2 print-area">
         {/* 四角を記入するcomponentをここに出力する */}
         {/* <DrawCutRects formData={formData} bestCutInfo={bestCutInfo} /> */}
         <DrawCutRects2 sheets={placedSheets} formData2={formData2} />

@@ -54,14 +54,32 @@ export const placeCutPiecesOnMaterials = (
   //---------------------------------------------------------------------------------------
   //指定枠に収まるかどうか　0:横に入る 1:縦に入る -1:入らない
   function checkCut(piece:CutPiece, area:AvailableArea):number {
+
+    if (modeFlag >0 ) {
+      switch (modeFlag) {
+        case 1:
+          if(area.keyValue[0] >= piece.keyValue[0] && area.keyValue[1] >= piece.keyValue[1]){
+            return 0
+          }
+          return -1
+          
+        case 2:
+          if (area.keyValue[0] >= piece.keyValue[1] && area.keyValue[1] >= piece.keyValue[0]) {
+            return 1
+          }
+          return -1
+
+      }
+    }
+
       //-----切断サイズの長編が材料の短辺に収まる場合
       if(area.keyValue[MIN] >= piece.keyValue[MAX]){
-          return area.isWidth ? 1 : 0
+        return area.isWidth ? 1 : 0
       }
 
       //-----
       if(area.keyValue.every((s, i) => s >= piece.keyValue[i])){
-          return area.isWidth ? 0 : 1
+        return area.isWidth ? 0 : 1
       }
       return -1
   }
@@ -89,9 +107,9 @@ export const placeCutPiecesOnMaterials = (
 
     if(hitKind !== -1){
       //材料にパーツを登録
-      if (modeFlag > 0) {
-        hitKind = modeFlag - 1;
-      };
+      // if (modeFlag > 0) {
+      //   hitKind = modeFlag - 1;
+      // };
       const addPiece:PlacedPiece = {
         x: hitArea.x,
         y: hitArea.y,
