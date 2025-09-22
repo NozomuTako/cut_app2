@@ -19,7 +19,7 @@ const DrawCutRects2: React.FC<{
     horizontal: number;
     cuttingCost: number;
   };
-}> = ({ sheets, formData2 }) => {
+}> = ({ sheets }) => {
 
 
 
@@ -34,7 +34,7 @@ const DrawCutRects2: React.FC<{
               width: `${sheet.width}px`, 
               height: `${sheet.height}px`, 
               // 印刷用スケーリングのためのCSS変数
-              ['--sheet-width' as any]: `${sheet.width}px`,
+              ['--sheet-width' as string]: `${sheet.width}px`,
 
               // maxWidth: "800px",
               // maxHeight: "1100px",
