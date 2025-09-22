@@ -62,13 +62,11 @@ export const placeCutPiecesOnMaterials = (
           if(area.keyValue[0] >= piece.keyValue[0] && area.keyValue[1] >= piece.keyValue[1]){
             return 0
           }
-          return -1
           
         case 2:
           if (area.keyValue[0] >= piece.keyValue[1] && area.keyValue[1] >= piece.keyValue[0]) {
             return 1
           }
-          return -1
 
       }
     }
