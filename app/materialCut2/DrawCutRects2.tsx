@@ -68,7 +68,9 @@ const DrawCutRects2: React.FC<{
               >
                 {area.id}
               </div>
-            ))}          </div>
+            ))}          
+            
+            </div>
         </div>
       ))}
     </div>
