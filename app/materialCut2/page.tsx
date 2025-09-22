@@ -73,28 +73,28 @@ const MaterialCut2Page = () => {
     const h = formData2.vertical
     const c = formData2.cuttingCost
 
-    const debugInput = [
-      {
-        horizontalValue: 700,//横
-        verticalValue: 200,//縦
-        materialCount: 4,//個数
-      },
-      {
-        horizontalValue: 500,//横
-        verticalValue: 200,//縦
-        materialCount: 20,//個数
-      },
-      {
-        horizontalValue: 300,//横
-        verticalValue: 80,//縦
-        materialCount: 14,//個数
-      },
-      {
-        horizontalValue: 40,//横
-        verticalValue: 600,//縦
-        materialCount: 10,//個数
-      },
-    ]
+    // const debugInput = [
+    //   {
+    //     horizontalValue: 700,//横
+    //     verticalValue: 200,//縦
+    //     materialCount: 4,//個数
+    //   },
+    //   {
+    //     horizontalValue: 500,//横
+    //     verticalValue: 200,//縦
+    //     materialCount: 20,//個数
+    //   },
+    //   {
+    //     horizontalValue: 300,//横
+    //     verticalValue: 80,//縦
+    //     materialCount: 14,//個数
+    //   },
+    //   {
+    //     horizontalValue: 40,//横
+    //     verticalValue: 600,//縦
+    //     materialCount: 10,//個数
+    //   },
+    // ]
     const output  = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,0);//inputs
     const output2 = placeCutPiecesOnMaterials(w,h,c,MIN,inputs,0);//inputs
     const output3 = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,1);//inputs

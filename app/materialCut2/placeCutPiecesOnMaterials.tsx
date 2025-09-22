@@ -55,6 +55,7 @@ export const placeCutPiecesOnMaterials = (
   //指定枠に収まるかどうか　0:横に入る 1:縦に入る -1:入らない
   function checkCut(piece:CutPiece, area:AvailableArea):number {
 
+    //強制的に切り出す方向を指定する場合
     if (modeFlag >0 ) {
       switch (modeFlag) {
         case 1:
