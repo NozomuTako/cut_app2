@@ -61,7 +61,7 @@ const scaleRatio = (height:number , width:number) => {
                   left: `${piece.x}px`,
                   top: `${piece.y}px`,
                   width: `${piece.width}px`,
-                  height: `${piece.height}px`,
+                  height: `${piece.height}px`, 
                 }}
               >
                 <p className="text-center py-4">{piece.width}</p>
