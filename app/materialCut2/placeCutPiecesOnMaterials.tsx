@@ -60,12 +60,12 @@ export const placeCutPiecesOnMaterials = (
       switch (modeFlag) {
         case 1:
           if(area.keyValue[0] >= piece.keyValue[0] && area.keyValue[1] >= piece.keyValue[1]){
-            return 0
+            return 1
           }
           
         case 2:
           if (area.keyValue[0] >= piece.keyValue[1] && area.keyValue[1] >= piece.keyValue[0]) {
-            return 1
+            return 0
           }
 
       }
@@ -73,11 +73,13 @@ export const placeCutPiecesOnMaterials = (
 
       //-----切断サイズの長編が材料の短辺に収まる場合
       if(area.keyValue[MIN] >= piece.keyValue[MAX]){
+        console.log("上id", area.id, area.isWidth, "area=", area.keyValue, "piece=", piece.keyValue )
         return area.isWidth ? 1 : 0
       }
 
       //-----
       if(area.keyValue.every((s, i) => s >= piece.keyValue[i])){
+        console.log("下id", area.id, area.isWidth, "area=", area.keyValue, "piece=", piece.keyValue )
         return area.isWidth ? 0 : 1
       }
       return -1
@@ -155,7 +157,7 @@ export const placeCutPiecesOnMaterials = (
       //材料の残り面積を登録
       const Area:AvailableArea[] = []
 
-      sizes.forEach((size, i) => {
+      sizes.forEach((size) => {
         Area.push({
           id: hitSheet.areaIdCnt++,
           keyValue: (size.w > size.h) ? [size.w, size.h] : [size.h, size.w],
@@ -222,7 +224,7 @@ export const placeCutPiecesOnMaterials = (
   
   //---------------------------------------------------------------------------------------
   //メイン処理
-  pieces.forEach((piece,j) => {
+  pieces.forEach((piece) => {
     //if(j >= 3)return
     for(let i = 0 ; i < piece.cnt ; ++i ){
       cutProcess(piece)

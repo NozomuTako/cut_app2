@@ -42,10 +42,10 @@ body {
     visibility: visible !important;
   }
   .print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100vw;
+    position: static; /* ← absoluteをやめる */
+    /* left: 0;
+    top: 0; */
+    /* width: 100vw; */
     background: white;
     z-index: 9999;
     padding: 0;
@@ -57,8 +57,11 @@ body {
     /* max-height: 1100px !important; 削除 */
     /* overflow: auto !important; 削除 */
     /* transform: scale(calc(793.7px / var(--sheet-width))); */
-    transform: scale(calc(1060px / var(--sheet-width)));
+    transform: scale(calc(var(--sheet-width)));
+    /* transform: scale(calc(1060px / var(--sheet-width))); */
     transform-origin: top left;
     page-break-inside: avoid !important; /* 途中で分割されないように */
+    margin-bottom: 20px; /* 印刷時の余白を追加 */
+
   }
 }

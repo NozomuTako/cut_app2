@@ -21,20 +21,32 @@ const DrawCutRects2: React.FC<{
   };
 }> = ({ sheets }) => {
 
+const scaleRatio = (height:number , width:number) => {
+  const ratio = Math.min(2200 / width, 2200 / height);
+  console.log(`scaleRatio for width=${width}, height=${height} → ${ratio}, sheets=${sheets.length}`);
+  return ratio;
+};
+
 
 
   return (
     <div>
       {sheets.map((sheet, index) => (
-        <div key={index} className="border border-gray-400 p-2 mb-4">
+        <div key={index} className="border border-gray-400 p-2 mb-4 material-sheet-print"
+        style={{
+          ['--sheet-width' as string]: scaleRatio(sheet.height, sheet.width),
+        }}
+        >
           <p className="text-lg font-bold text-blue-600">材料 {index + 1}</p>
           <div 
-            className="relative bg-gray-100 material-sheet-print"
+            className="relative bg-gray-100"
             style={{ 
               width: `${sheet.width}px`, 
               height: `${sheet.height}px`, 
+
               // 印刷用スケーリングのためのCSS変数
-              ['--sheet-width' as string]: `${sheet.width}px`,
+              // ['--sheet-width' as string]: scaleRatio(sheet.height, sheet.width),
+              // ['--sheet-width' as string]: `${sheet.width}px`,
 
               // maxWidth: "800px",
               // maxHeight: "1100px",
