@@ -262,7 +262,6 @@ export const placeCutPiecesOnMaterials = (
         a.keyValue = a.w > a.h ? [a.w, a.h] : [a.h, a.w]
         a.isWidth = a.w > a.h
     })
-      
     })
   })
 

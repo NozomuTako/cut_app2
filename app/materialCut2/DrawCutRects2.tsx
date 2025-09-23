@@ -56,7 +56,7 @@ const scaleRatio = (height:number , width:number) => {
             {sheet.placedPieces.map((piece, i) => (
               <div
                 key={i}
-                className="absolute bg-blue-500 text-white text-xs flex items-center justify-center"
+                className="absolute bg-blue-500 text-white text-xs flex flex-col items-center justify-center"
                 style={{
                   left: `${piece.x}px`,
                   top: `${piece.y}px`,
@@ -64,10 +64,11 @@ const scaleRatio = (height:number , width:number) => {
                   height: `${piece.height}px`,
                 }}
               >
-                {piece.id + 1}
+                <p className="text-center py-4">{piece.width}</p>
+                <p className="flex-1 flex items-center justify-center">{piece.id + 1}</p>
               </div>
             ))}
-            {sheet.availableArea.map((area, i) => (
+            {false && sheet.availableArea.map((area, i) => (
               <div
                 key={i}
                 className="absolute bg-orange-400 text-white text-xs flex items-center justify-center border border-black"

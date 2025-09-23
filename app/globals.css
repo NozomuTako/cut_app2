@@ -42,9 +42,9 @@ body {
     visibility: visible !important;
   }
   .print-area {
-    position: static; /* ← absoluteをやめる */
-    /* left: 0;
-    top: 0; */
+    position: absolute; /* ← absoluteをやめる */
+    left: 0;
+    top: 0; 
     /* width: 100vw; */
     background: white;
     z-index: 9999;
@@ -62,6 +62,7 @@ body {
     transform-origin: top left;
     page-break-inside: avoid !important; /* 途中で分割されないように */
     margin-bottom: 20px; /* 印刷時の余白を追加 */
+    break-before: page;
 
   }
 }
