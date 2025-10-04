@@ -21,8 +21,6 @@ function tryPlaceCutPiece(
   });
 }
 
-  const padding = 2; // 部品間の余白（任意）
-
   // 探索開始位置
   const step = 1;
 

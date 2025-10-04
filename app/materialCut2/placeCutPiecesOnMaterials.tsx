@@ -55,7 +55,7 @@ export const placeCutPiecesOnMaterials = (
   //---------------------------------------------------------------------------------------
   //指定枠に収まるかどうか　0:縦に入る 1:横に入る -1:入らない
   function checkCut(piece:CutPiece, area:AvailableArea, isWidth:number):number {
-    let judgeWidth:number[] = []
+    const judgeWidth:number[] = []
     //-----
     console.log(area.keyValue[MIN], "area.Keyvalue", piece.keyValue[MAX], "piece.KeyValue")
     if(area.keyValue[MIN] >= piece.keyValue[MAX]){
@@ -118,8 +118,6 @@ export const placeCutPiecesOnMaterials = (
     let hitArea:AvailableArea = sheets[0].availableArea[0]//一応の初期値
     let hitKind:number = -1
 
-    //デバック用変数
-    let count = 0;
 
     //入るところを探す（複数ある場合は一番小さい余白を採用）
     sheets.forEach(sheet => {
@@ -210,15 +208,6 @@ export const placeCutPiecesOnMaterials = (
     }else{
       //検索しても入る材料がない場合は材料を新規追加
       sheets.push(addSheet())
-
-      // デバック
-      // console.log(sheets, "材料追加", piece, "ピース")
-      // count += 1;
-      // if (count > 10){
-      //   console.log("無限ループ回避");
-      //   return hitKind;
-      // }
-
 
       //もう１回繰り返す
       return cutProcess(piece,no,isWidth)
