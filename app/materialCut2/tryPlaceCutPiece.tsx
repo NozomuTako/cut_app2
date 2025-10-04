@@ -29,7 +29,7 @@ function tryPlaceCutPiece(
   for (let y = 0; y <= sheet.height - piece.height; y += step) {
     for (let x = 0; x <= sheet.width - piece.width; x += step) {
       if (!isOverlapping(sheet.placedPieces, x, y, piece.width, piece.height)) {
-        return { x, y, width: piece.width, height: piece.height, id: piece.id };
+        return { x, y, width: piece.width, height: piece.height, id: piece.id, no: 0, isWidth: piece.width > piece.height};
       }
 
       // 回転してみる
@@ -45,6 +45,8 @@ function tryPlaceCutPiece(
           width: piece.height,
           height: piece.width,
           id: piece.id,
+          no: 0,
+          isWidth: piece.width > piece.height
         };
       }
     }

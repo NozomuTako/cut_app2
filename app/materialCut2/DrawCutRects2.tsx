@@ -22,7 +22,7 @@ const DrawCutRects2: React.FC<{
 }> = ({ sheets }) => {
 
 const scaleRatio = (height:number , width:number) => {
-  const ratio = Math.min(2200 / width, 2200 / height);
+  const ratio = Math.min(2000 / width, 1800 / height);
   console.log(`scaleRatio for width=${width}, height=${height} → ${ratio}, sheets=${sheets.length}`);
   return ratio;
 };
@@ -64,8 +64,25 @@ const scaleRatio = (height:number , width:number) => {
                   height: `${piece.height}px`, 
                 }}
               >
-                <p className="text-center py-4">{piece.width}</p>
-                <p className="flex-1 flex items-center justify-center">{piece.id + 1}</p>
+                {/* 赤色の塗りつぶし四角 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: piece.isWidth ? `${piece.height / 3}px` : "0px",
+                    left: piece.isWidth ? undefined : `${piece.width / 3}px`,
+                    right: piece.isWidth ? '0px' : undefined,
+                    width: piece.isWidth ? "5px" : `${piece.width / 3}px`,
+                    height: piece.isWidth ? `${piece.height / 3}px` : `5px`,
+                    backgroundColor: 'red',
+
+
+                    // width: `${piece.width / 3}px`,
+                    // height: `5px`,
+                    // backgroundColor: 'red',
+                  }}
+                ></div>
+
+                <p className="flex-1 flex items-center justify-center text-[25px]">{piece.id + 1}</p>
               </div>
             ))}
             {false && sheet.availableArea.map((area, i) => (

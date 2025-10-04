@@ -95,33 +95,38 @@ const MaterialCut2Page = () => {
     //     materialCount: 10,//個数
     //   },
     // ]
-    const output  = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,0);//inputs
-    const output2 = placeCutPiecesOnMaterials(w,h,c,MIN,inputs,0);//inputs
-    const output3 = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,1);//inputs
-    const output4 = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,2);//inputs
-    const outputs = [output,output2,output3,output4];
 
-    
+
+
+    const outputs:{sheets:MaterialSheet[], total:number}[] = []
+    outputs.push(placeCutPiecesOnMaterials(w,h,c,MAX,inputs,0));//inputs
+    outputs.push(placeCutPiecesOnMaterials(w,h,c,MIN,inputs,0));//inputs
+    outputs.push(placeCutPiecesOnMaterials(w,h,c,MAX,inputs,1));//inputs
+    outputs.push(placeCutPiecesOnMaterials(w,h,c,MIN,inputs,1));//inputs
+
+    let finalOutputNo = 0
+    let total=99999
+    outputs.forEach((output,i) => {
+      if(output.total < total){
+        total = output.total
+        finalOutputNo = i
+      }
+    });
+
+    setTotalCut(outputs[finalOutputNo].total);
+    setPlacedSheets(outputs[finalOutputNo].sheets);
+
+
+
+
     // const output  = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,0);//inputs
     // const output2 = placeCutPiecesOnMaterials(w,h,c,MIN,inputs,0);//inputs
-    // const outputs = [output,output2];
-
-    const maxOutput = outputs.reduce((prev, current) => (prev.total < current.total ? prev : current));
-
-    //川上さん if(output.total > 0 && output2.total > 0){
-    //   if(output.total < output2.total){
-    //     setTotalCut(output.total);
-    //     setPlacedSheets(output.sheets);
-    //   }else{
-    //     setTotalCut(output2.total);
-    //     setPlacedSheets(output2.sheets);
-    //   }
-    // }
-
-    setTotalCut(maxOutput.total);
-    setPlacedSheets(maxOutput.sheets);
-
-
+    // const output3 = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,1);//inputs
+    // const output4 = placeCutPiecesOnMaterials(w,h,c,MAX,inputs,2);//inputs
+    // const outputs = [output,output2,output3,output4];
+    // const maxOutput = outputs.reduce((prev, current) => (prev.total < current.total ? prev : current));
+    // setTotalCut(maxOutput.total);
+    // setPlacedSheets(maxOutput.sheets);
   };
 
 
@@ -245,7 +250,7 @@ const MaterialCut2Page = () => {
               />
             </div>
             <Button
-              className="m-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+              className="m-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 print-hide"
               onClick={() => handleRemove(index)}
             >
               削除
@@ -255,7 +260,7 @@ const MaterialCut2Page = () => {
         ))}
 
         <Button 
-          className="flex items-center gap-2 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+          className="flex items-center gap-2 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 print-hide"
           onClick={handleAdd}
         >
           <FaPlus />
@@ -264,13 +269,13 @@ const MaterialCut2Page = () => {
 
 
         <hr className="border-t-2 border-gray-400 mt-5" />
-        <Button className="my-5" onClick={CreateRect2}>
+        <Button className="my-5 print-hide" onClick={CreateRect2}>
           計算開始
         </Button>
 
         {/* 印刷ボタン追加 */}
         <Button
-          className="mb-5 ml-2 bg-gray-700 text-white rounded px-3 py-1 hover:bg-gray-900"
+          className="mb-5 ml-2 bg-gray-700 text-white rounded px-3 py-1 hover:bg-gray-900 print-hide"
           onClick={() => window.print()}
         >
           印刷
@@ -282,9 +287,41 @@ const MaterialCut2Page = () => {
         </div>
       </div>
 
-      <div className="ml-2 w-px border border-gray-400" />
+      <div className="ml-2 w-px border border-gray-400 print-hide" />
+
+      {/* 印刷時のみ改ページ */}
+      {/* <div className="print-page-break" /> */}
 
       <div className="p-2 print-area">
+        <div className="hidden print:block">
+          {/* 印刷時のみ表示したい内容 */}
+
+          <div className="p-2 mt-5">
+            <p className="text-6xl mb-2">材料</p>
+            <div className="p-5 flex">
+              <p className="text-4xl">縦：{formData2.vertical}</p>
+              <p className="text-4xl ml-5">横：{formData2.horizontal}</p>
+              <p className="text-4xl ml-13">切断代：{formData2.cuttingCost}</p>
+            </div>
+          </div>
+
+          <div className="p-2 mt-5">
+            <p className="text-6xl mb-2">切断サイズ</p>
+            <div className="p-5">
+              {inputs.map((items, index) => (
+                <div className="text-5xl flex border mb-3 p-2" key={index}>
+                  <p>切断サイズ{index + 1}</p>
+                  <div className="flex p-5">
+                    <p className="text-4xl">縦：{items.verticalValue}</p>
+                    <p className="text-4xl ml-5">横：{items.horizontalValue}</p>
+                    <p className="text-4xl ml-13">枚数：{items.materialCount}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* 四角を記入するcomponentをここに出力する */}
         {/* <DrawCutRects formData={formData} bestCutInfo={bestCutInfo} /> */}
         <DrawCutRects2 sheets={placedSheets} formData2={formData2} />

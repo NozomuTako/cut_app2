@@ -17,7 +17,8 @@ export const placeCutPiecesOnMaterials = (
   cuttingCost: number,
   sortOption: number,
   inputs: inputValue[],
-  modeFlag: number,
+  // modeFlag: number,
+  initialIsWidth: number,
 ): { sheets: MaterialSheet[]; total: number } => {
   //材料の高さ、幅を大きい順に
   materialHeight += cuttingCost
@@ -52,50 +53,78 @@ export const placeCutPiecesOnMaterials = (
   }
 
   //---------------------------------------------------------------------------------------
-  //指定枠に収まるかどうか　0:横に入る 1:縦に入る -1:入らない
-  function checkCut(piece:CutPiece, area:AvailableArea):number {
-
-    //強制的に切り出す方向を指定する場合
-    if (modeFlag >0 ) {
-      switch (modeFlag) {
-        case 1:
-          if(area.keyValue[0] >= piece.keyValue[0] && area.keyValue[1] >= piece.keyValue[1]){
-            return 1
-          }
-          
-        case 2:
-          if (area.keyValue[0] >= piece.keyValue[1] && area.keyValue[1] >= piece.keyValue[0]) {
-            return 0
-          }
-
-      }
+  //指定枠に収まるかどうか　0:縦に入る 1:横に入る -1:入らない
+  function checkCut(piece:CutPiece, area:AvailableArea, isWidth:number):number {
+    let judgeWidth:number[] = []
+    //-----
+    console.log(area.keyValue[MIN], "area.Keyvalue", piece.keyValue[MAX], "piece.KeyValue")
+    if(area.keyValue[MIN] >= piece.keyValue[MAX]){
+        //return area.isWidth ? 1 : 0
+        judgeWidth.push(area.isWidth ? 1 : 0)
     }
 
-      //-----切断サイズの長編が材料の短辺に収まる場合
-      if(area.keyValue[MIN] >= piece.keyValue[MAX]){
-        console.log("上id", area.id, area.isWidth, "area=", area.keyValue, "piece=", piece.keyValue )
-        return area.isWidth ? 1 : 0
-      }
+    //-----
+    console.log(area.keyValue, "area.Keyvalue", piece.keyValue, "piece.KeyValue")
+    if(area.keyValue.every((s, i) => s >= piece.keyValue[i])){
+        //return area.isWidth ? 0 : 1
+        judgeWidth.push(area.isWidth ? 0 : 1)
+    }
 
-      //-----
-      if(area.keyValue.every((s, i) => s >= piece.keyValue[i])){
-        console.log("下id", area.id, area.isWidth, "area=", area.keyValue, "piece=", piece.keyValue )
-        return area.isWidth ? 0 : 1
-      }
-      return -1
+    console.log("judgeWidth", judgeWidth, isWidth)
+    if(judgeWidth.length > 0){
+      if(judgeWidth.length === 2)
+        return isWidth
+      else
+        return judgeWidth[0]
+    }
+    
+    return -1
+
+
+
+    // //強制的に切り出す方向を指定する場合
+    // if (modeFlag >0 ) {
+    //   switch (modeFlag) {
+    //     case 1:
+    //       if(area.keyValue[0] >= piece.keyValue[0] && area.keyValue[1] >= piece.keyValue[1]){
+    //         return 1
+    //       }
+          
+    //     case 2:
+    //       if (area.keyValue[0] >= piece.keyValue[1] && area.keyValue[1] >= piece.keyValue[0]) {
+    //         return 0
+    //       }
+
+    //   }
+    // }
+    //   //-----切断サイズの長編が材料の短辺に収まる場合
+    //   if(area.keyValue[MIN] >= piece.keyValue[MAX]){
+    //     console.log("上id", area.id, area.isWidth, "area=", area.keyValue, "piece=", piece.keyValue )
+    //     return area.isWidth ? 1 : 0
+    //   }
+
+    //   //-----
+    //   if(area.keyValue.every((s, i) => s >= piece.keyValue[i])){
+    //     console.log("下id", area.id, area.isWidth, "area=", area.keyValue, "piece=", piece.keyValue )
+    //     return area.isWidth ? 0 : 1
+    //   }
+    //   return -1
   }
 
   //---------------------------------------------------------------------------------------
-  function cutProcess(piece:CutPiece) {
+  function cutProcess(piece:CutPiece,no:number,isWidth:number):number {
     //使用する変数の準備
     let hitSheet:MaterialSheet = sheets[0]//一応の初期値
     let hitArea:AvailableArea = sheets[0].availableArea[0]//一応の初期値
     let hitKind:number = -1
 
+    //デバック用変数
+    let count = 0;
+
     //入るところを探す（複数ある場合は一番小さい余白を採用）
     sheets.forEach(sheet => {
       sheet.availableArea.forEach(area => {
-        const kind = checkCut(piece, area)
+        const kind = checkCut(piece, area, isWidth)
         if(kind !== -1){//入る余白がヒットした場合
           if(hitKind === -1 || area.w * area.h < hitArea.w * hitArea.h){//初回　or すでにヒットしていた場合は面積を比較
             hitKind = kind
@@ -116,7 +145,9 @@ export const placeCutPiecesOnMaterials = (
         y: hitArea.y,
         width: piece.keyValue[hitKind],
         height: piece.keyValue[1 - hitKind],
-        id: piece.id
+        id: piece.id,
+        isWidth: piece.keyValue[hitKind] > piece.keyValue[1 - hitKind],
+        no: no
       }
       hitSheet.placedPieces.push(addPiece)
 
@@ -175,13 +206,25 @@ export const placeCutPiecesOnMaterials = (
         if(a.w > 0 && a.h > 0){//幅or高さが0の場合は登録しない
           hitSheet.availableArea.push(structuredClone(a))
         }
-      })
+        })
     }else{
       //検索しても入る材料がない場合は材料を新規追加
       sheets.push(addSheet())
+
+      // デバック
+      // console.log(sheets, "材料追加", piece, "ピース")
+      // count += 1;
+      // if (count > 10){
+      //   console.log("無限ループ回避");
+      //   return hitKind;
+      // }
+
+
       //もう１回繰り返す
-      cutProcess(piece)
+      return cutProcess(piece,no,isWidth)
     }
+
+    return hitKind
   }
 
 
@@ -226,8 +269,9 @@ export const placeCutPiecesOnMaterials = (
   //メイン処理
   pieces.forEach((piece) => {
     //if(j >= 3)return
+    let isWidth = initialIsWidth
     for(let i = 0 ; i < piece.cnt ; ++i ){
-      cutProcess(piece)
+      isWidth = cutProcess(piece, i, isWidth)
     }
     //材料の余白を統合する
     sheets.forEach(sheet => {

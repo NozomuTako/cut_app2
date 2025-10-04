@@ -50,6 +50,8 @@ export type PlacedPiece = {
   width: number;
   height: number;
   id: number;
+  isWidth: boolean;//横が長かったらtrue
+  no: number;
 };
 
 export type AvailableArea = {

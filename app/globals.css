@@ -42,7 +42,7 @@ body {
     visibility: visible !important;
   }
   .print-area {
-    position: absolute; /* ← absoluteをやめる */
+    position: absolute;
     left: 0;
     top: 0; 
     /* width: 100vw; */
@@ -65,4 +65,27 @@ body {
     break-before: page;
 
   }
+  .print-hide {
+    display: none !important;
+  }
+  /* .print-page-break {
+    break-before: page;
+    page-break-before: always;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: none !important;
+  } */
+  /* .print-only {
+    display: block;
+  } */
+
 }
+
+/* @media screen {
+  .print-only {
+    display: none;
+  }
+} */
+
